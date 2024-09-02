@@ -18,7 +18,13 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 func create(w http.ResponseWriter, r *http.Request) {
 
-    w.Write([]byte("Creating a clip"))
+    if r.Method != "POST" {
+        w.Header().Set("Allow", "POST")
+        http.Error(w, "Method Now Allowed", 405)
+        return
+    }
+
+    w.Write([]byte("Create a clip"))
 }
 
 func view(w http.ResponseWriter, r *http.Request) {
