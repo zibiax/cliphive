@@ -3,7 +3,7 @@ package main
 import (
     "log"
     "net/http"
-    // "fmt"
+    "fmt"
 )
 
 //Home handler function
@@ -16,11 +16,11 @@ func home(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte("Hello from cliphive"))
 }
 
-func create(w http.ResponseWriter, r *http.Request) {
+func cliphiveCreate(w http.ResponseWriter, r *http.Request) {
 
-    if r.Method != "POST" {
-        w.Header().Set("Allow", "POST")
-        http.Error(w, "Method Now Allowed", 405)
+    if r.Method != http.MethodPost {
+        w.Header().Set("Allow", http.MethodPost)
+        http.Error(w, "Method Now Allowed", http.StatusMethodNotAllowed)
         return
     }
 
@@ -35,11 +35,12 @@ func view(w http.ResponseWriter, r *http.Request) {
 func main() {
     mux := http.NewServeMux()
     mux.HandleFunc("/", home)
-    mux.HandleFunc("/clip/create", create)
+    mux.HandleFunc("/clip/create", cliphiveCreate)
     mux.HandleFunc("/clip/view", view)
 
 
     log.Println("Starting server on port: 4000")
+    fmt.Println("Yay")
 
     // Error handling
     err := http.ListenAndServe(":4000", mux)
