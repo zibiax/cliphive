@@ -4,6 +4,7 @@ import (
     "log"
     "net/http"
     "fmt"
+    "strconv"
 )
 
 //Home handler function
@@ -29,7 +30,15 @@ func cliphiveCreate(w http.ResponseWriter, r *http.Request) {
 
 func view(w http.ResponseWriter, r *http.Request) {
 
-    w.Write([]byte("view a clip"))
+    id, err := strconv.Atoi(r.URL.Query().Get("id"))
+    
+    
+    if err != nil || id < 1 {
+        http.NotFound(w, r)
+        return
+    }
+    fmt.Fprintf(w, "Display a specific clip with ID %d...", id)
+
 }
 
 func main() {
