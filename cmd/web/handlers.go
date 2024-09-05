@@ -4,6 +4,8 @@ import (
     "fmt"
     "net/http"
     "strconv"
+    "html/template"
+    "log"
 )
 
 //Home handler function
@@ -12,8 +14,20 @@ func home(w http.ResponseWriter, r *http.Request) {
         http.NotFound(w, r)
         return
     }
+    ts, err := template.ParseFiles("./ui/html/pages/home.tmpl")
 
-    w.Write([]byte("Hello from cliphive"))
+    if err != nil {
+        log.Println(err.Error())
+        http.Error(w, "Internal Server Error", 500)
+        return
+    }
+
+    err = ts.Execute(w, nil)
+    if err != nil {
+        log.Println(err.Error())
+        http.Error(w, "Internal Server Errpr", 500)
+    }
+
 }
 
 func cliphiveCreate(w http.ResponseWriter, r *http.Request) {
