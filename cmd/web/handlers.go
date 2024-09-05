@@ -1,9 +1,8 @@
 package main
 
 import (
-    "log"
-    "net/http"
     "fmt"
+    "net/http"
     "strconv"
 )
 
@@ -28,7 +27,7 @@ func cliphiveCreate(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte("Create a clip"))
 }
 
-func view(w http.ResponseWriter, r *http.Request) {
+func cliphiveView(w http.ResponseWriter, r *http.Request) {
 
     id, err := strconv.Atoi(r.URL.Query().Get("id"))
     
@@ -39,19 +38,4 @@ func view(w http.ResponseWriter, r *http.Request) {
     }
     fmt.Fprintf(w, "Display a specific clip with ID %d...", id)
 
-}
-
-func main() {
-    mux := http.NewServeMux()
-    mux.HandleFunc("/", home)
-    mux.HandleFunc("/clip/create", cliphiveCreate)
-    mux.HandleFunc("/clip/view", view)
-
-
-    log.Println("Starting server on port: 4000")
-    fmt.Println("Yay")
-
-    // Error handling
-    err := http.ListenAndServe(":4000", mux)
-    log.Fatal(err)
 }
