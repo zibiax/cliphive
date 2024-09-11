@@ -4,13 +4,23 @@ import (
     "log"
     "net/http"
     "strings"
+    "flag"
+    "fmt"
 )
 
 
 
 func main() {
-    mux := http.NewServeMux()
+    // set port address to webserver. Default is 4000
+    port := flag.String("port", ":4000", "HTTP network portess")
 
+    flag.Parse()
+
+    if !strings.HasPrefix(*port, ":") {
+        *port = fmt.Sprintf(":%s", *port)
+    }
+
+    mux := http.NewServeMux()
 
 
     mux.HandleFunc("/", home)
@@ -21,11 +31,10 @@ func main() {
     mux.Handle("/static/", http.StripPrefix("/static", neuter(fileServer)))
 
 
-    log.Println("Starting server on port: 4000")
-    println("Yay")
+    log.Printf("Starting server on port %s", *port)
 
     // Error handling
-    err := http.ListenAndServe(":4000", mux)
+    err := http.ListenAndServe(*port, mux)
     log.Fatal(err)
 }
 
