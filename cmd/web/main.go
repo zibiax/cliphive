@@ -6,6 +6,7 @@ import (
     "strings"
     "flag"
     "fmt"
+    "os"
 )
 
 
@@ -16,9 +17,13 @@ func main() {
 
     flag.Parse()
 
+    // Check if port number starts with ":"
     if !strings.HasPrefix(*port, ":") {
         *port = fmt.Sprintf(":%s", *port)
     }
+
+    infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+    errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
     mux := http.NewServeMux()
 
@@ -31,11 +36,11 @@ func main() {
     mux.Handle("/static/", http.StripPrefix("/static", neuter(fileServer)))
 
 
-    log.Printf("Starting server on port %s", *port)
+    infoLog.Printf("Starting server on %s", *port)
 
     // Error handling
     err := http.ListenAndServe(*port, mux)
-    log.Fatal(err)
+    errorLog.Fatal(err)
 }
 
 func neuter(next http.Handler) http.Handler {
