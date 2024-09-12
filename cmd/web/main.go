@@ -35,14 +35,21 @@ func main() {
     fileServer := http.FileServer(http.Dir("./ui/static/"))
     mux.Handle("/static/", http.StripPrefix("/static", neuter(fileServer)))
 
+    // Http.Server struct, so that it uses same configuration that we set.
+    srv := &http.Server{
+        Addr: *port,
+        ErrorLog: errorLog,
+        Handler: mux,
+    }
 
     infoLog.Printf("Starting server on %s", *port)
 
     // Error handling
-    err := http.ListenAndServe(*port, mux)
+    err := srv.ListenAndServe()
     errorLog.Fatal(err)
 }
 
+//This is run if there is a trailing '/', so that static files isn't accessed inappropriately. http not found is run
 func neuter(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         if strings.HasSuffix(r.URL.Path, "/") {
