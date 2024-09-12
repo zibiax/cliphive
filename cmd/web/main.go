@@ -10,6 +10,11 @@ import (
 )
 
 
+type application struct {
+    errorLog *log.Logger
+    infoLog *log.Logger
+}
+
 
 func main() {
     // set port address to webserver. Default is 4000
@@ -25,12 +30,17 @@ func main() {
     infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
     errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
+    app := &application{
+        errorLog: errorLog,
+        infoLog: infoLog,
+    }
+
     mux := http.NewServeMux()
 
 
-    mux.HandleFunc("/", home)
-    mux.HandleFunc("/clip/create", cliphiveCreate)
-    mux.HandleFunc("/clip/view", cliphiveView)
+    mux.HandleFunc("/", app.home)
+    mux.HandleFunc("/clip/create", app.cliphiveCreate)
+    mux.HandleFunc("/clip/view", app.cliphiveView)
 
     fileServer := http.FileServer(http.Dir("./ui/static/"))
     mux.Handle("/static/", http.StripPrefix("/static", neuter(fileServer)))
