@@ -35,21 +35,14 @@ func main() {
         infoLog: infoLog,
     }
 
-    mux := http.NewServeMux()
 
 
-    mux.HandleFunc("/", app.home)
-    mux.HandleFunc("/clip/create", app.cliphiveCreate)
-    mux.HandleFunc("/clip/view", app.cliphiveView)
-
-    fileServer := http.FileServer(http.Dir("./ui/static/"))
-    mux.Handle("/static/", http.StripPrefix("/static", neuter(fileServer)))
 
     // Http.Server struct, so that it uses same configuration that we set.
     srv := &http.Server{
         Addr: *port,
         ErrorLog: errorLog,
-        Handler: mux,
+        Handler: app.routes(),
     }
 
     infoLog.Printf("Starting server on %s", *port)
