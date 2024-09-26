@@ -59,7 +59,7 @@ func main() {
     infoLog.Printf("Starting server on %s", *port)
 
     // Error handling
-    err := srv.ListenAndServe()
+    err = srv.ListenAndServe()
     errorLog.Fatal(err)
 }
 
