@@ -9,12 +9,14 @@ import (
     "os"
     "database/sql"
     _ "github.com/go-sql-driver/mysql"
+    "cliphive/internal/models"
 )
 
 
 type application struct {
     errorLog *log.Logger
     infoLog *log.Logger
+    clips *models.ClipsModel
 }
 
 
@@ -44,6 +46,7 @@ func main() {
     app := &application{
         errorLog: errorLog,
         infoLog: infoLog,
+        clips: &models.ClipsModel{DB: db},
     }
 
 
