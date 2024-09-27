@@ -8,8 +8,9 @@ import (
     "fmt"
     "os"
     "database/sql"
+
     _ "github.com/go-sql-driver/mysql"
-    "cliphive/internal/models"
+    "github.com/zibiax/cliphive/internal/models"
 )
 
 
@@ -22,11 +23,20 @@ type application struct {
 
 func main() {
     // set port address to webserver. Default is 4000
-    port := flag.String("port", ":4000", "HTTP network portess")
+    port := flag.String("port", "4000", "HTTP network portess")
+    dbUser := flag.String("dbuser", "web", "Database user")
+    dbName := flag.String("dbname", "cliphive", "Database name")
 
-    dsn := flag.String("dsn", "web:pass@/cliphive?parseTime=true", "MySQL data source name")
+    dbPass := os.Getenv("DB_PASSWORD")
+    if dbPass == "" {
+        log.Fatal("DB_PASSWORD environment variable not set")
+    }
 
     flag.Parse()
+
+    dsn := fmt.Sprintf("%s:%s@/%s?parseTime=true", *dbUser, dbPass, *dbName,)
+    // dsn := flag.String("dsn", "web:pass@/cliphive?parseTime=true", "MySQL data source name")
+
 
     // Check if port number starts with ":"
     if !strings.HasPrefix(*port, ":") {
@@ -36,7 +46,7 @@ func main() {
     infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
     errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-    db, err := openDB(*dsn)
+    db, err := openDB(dsn)
     if err != nil {
         errorLog.Fatal(err)
     }
