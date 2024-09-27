@@ -30,6 +30,7 @@ func (m *ClipsModel) Insert(title string, content string, expires int) (int, err
     if err != nil {
         return 0, nil
     }
+    return int(id), nil
 }
 
 func(m *ClipsModel) Get(id int) (*Clips, error) {
