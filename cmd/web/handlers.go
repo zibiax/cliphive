@@ -41,8 +41,18 @@ func (app *application) cliphiveCreate(w http.ResponseWriter, r *http.Request) {
         app.clientError(w, http.StatusMethodNotAllowed)
         return
     }
+    title := "O snail"
+    content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n- Kobayashi Issa"
+    expires := 7
 
-    w.Write([]byte("Create a clip..."))
+    id, err := app.clips.Insert(title, content, expires)
+    if err != nil {
+        app.serverError(w, err)
+        return
+    }
+
+    http.Redirect(w, r, fmt.Sprintf("/clip/view?id=%d", id), http.StatusSeeOther)
+
 }
 
 func (app *application) cliphiveView(w http.ResponseWriter, r *http.Request) {
