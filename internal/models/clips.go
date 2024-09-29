@@ -1,8 +1,9 @@
 package models
 
 import (
-    "database/sql"
-    "time"
+	"database/sql"
+	"errors"
+	"time"
 )
 
 type Clips struct {
@@ -34,7 +35,23 @@ func (m *ClipsModel) Insert(title string, content string, expires int) (int, err
 }
 
 func(m *ClipsModel) Get(id int) (*Clips, error) {
-    return nil, nil
+    stmt := `SELECT id, title, content, created, expires FROM clips WHERE
+        expires > UTC_TIMESTAMP() AND id = ?`
+
+    row := m.DB.QueryRow(stmt, id)
+
+    c := &Clips{}
+
+    err := row.Scan(&c.ID, &c.Title, &c.Content, &c.Created, &c.Expires)
+    if err != nil {
+        if errors.Is(err, sql.ErrNoRows) {
+            return nil, ErrNoRecord
+        } else {
+            return nil, err
+        }
+    }
+
+    return c, nil
 }
 
 func (m *ClipsModel) Latest() ([]*Clips, error) {
