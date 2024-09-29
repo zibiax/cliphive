@@ -5,6 +5,9 @@ import (
     "net/http"
     "strconv"
     "html/template"
+    "errors"
+
+    "github.com/zibiax/cliphive/internal/models"
 )
 
 //Home handler function
@@ -59,11 +62,18 @@ func (app *application) cliphiveView(w http.ResponseWriter, r *http.Request) {
 
     id, err := strconv.Atoi(r.URL.Query().Get("id"))
     
-    
     if err != nil || id < 1 {
         app.notFound(w)
         return
     }
-    fmt.Fprintf(w, "Display a specific clip with ID %d...", id)
-
+    clips, err := app.clips.Get(id)
+    if err != nil {
+        if errors.Is(err, models.ErrNoRecord){
+            app.notFound(w)
+        } else {
+            app.serverError(w, err)
+        }
+        return
+    }
+    fmt.Fprintf(w, "%+v", clips)
 }
