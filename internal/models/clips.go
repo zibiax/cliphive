@@ -55,6 +55,29 @@ func(m *ClipsModel) Get(id int) (*Clips, error) {
 }
 
 func (m *ClipsModel) Latest() ([]*Clips, error) {
-    return nil, nil
+    stmt := `SELECT id, title, content, created, expires from clip
+        WHERE expires > UTC_TIMESTAMP() ORDER BY id DESC LIMIT 10`
+    
+    rows, err := m.DB.Query(stmt)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+    clips := []*Clips{}
+
+    for rows.Next() {
+        c := &Clips{}
+
+        err = rows.Scan(&c.ID, &c.Title, &c.Content, &c.Created, &c.Expires)
+        if err != nil {
+            return nil, err
+        }
+        clips = append(clips, c)
+
+    }
+    if err = rows.Err(); err != nil {
+            return nil, err
+    }
+    return clips, nil
 }
 
