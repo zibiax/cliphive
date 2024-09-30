@@ -55,7 +55,7 @@ func(m *ClipsModel) Get(id int) (*Clips, error) {
 }
 
 func (m *ClipsModel) Latest() ([]*Clips, error) {
-    stmt := `SELECT id, title, content, created, expires from clip
+    stmt := `SELECT id, title, content, created, expires from clips
         WHERE expires > UTC_TIMESTAMP() ORDER BY id DESC LIMIT 10`
     
     rows, err := m.DB.Query(stmt)

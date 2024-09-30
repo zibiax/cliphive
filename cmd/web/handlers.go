@@ -4,7 +4,7 @@ import (
     "fmt"
     "net/http"
     "strconv"
-    "html/template"
+    // "html/template"
     "errors"
 
     "github.com/zibiax/cliphive/internal/models"
@@ -17,23 +17,35 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    files := []string{
-        "./ui/html/pages/base.tmpl",
-        "./ui/html/partials/nav.tmpl",
-        "./ui/html/pages/home.tmpl",
-    }
-
-
-    ts, err := template.ParseFiles(files...)
+    clips, err := app.clips.Latest()
     if err != nil {
         app.serverError(w, err)
         return
     }
 
-    err = ts.ExecuteTemplate(w, "base", nil)
-    if err != nil {
-        app.serverError(w, err)
+    for _, clip := range clips {
+        fmt.Fprintf(w, "%+v\n", clip)
     }
+
+    
+
+   // files := []string{
+   //     "./ui/html/pages/base.tmpl",
+   //     "./ui/html/partials/nav.tmpl",
+   //     "./ui/html/pages/home.tmpl",
+   // }
+
+
+   // ts, err := template.ParseFiles(files...)
+   // if err != nil {
+   //     app.serverError(w, err)
+   //     return
+   // }
+
+    //err = ts.ExecuteTemplate(w, "base", nil)
+    //if err != nil {
+    //    app.serverError(w, err)
+    //}
 
 }
 
