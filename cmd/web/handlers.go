@@ -17,13 +17,13 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    clips, err := app.clips.Latest()
+    clip, err := app.clip.Latest()
     if err != nil {
         app.serverError(w, err)
         return
     }
 
-    for _, clip := range clips {
+    for _, clip := range clip {
         fmt.Fprintf(w, "%+v\n", clip)
     }
 
@@ -61,7 +61,7 @@ func (app *application) cliphiveCreate(w http.ResponseWriter, r *http.Request) {
     content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n- Kobayashi Issa"
     expires := 7
 
-    id, err := app.clips.Insert(title, content, expires)
+    id, err := app.clip.Insert(title, content, expires)
     if err != nil {
         app.serverError(w, err)
         return
@@ -79,7 +79,7 @@ func (app *application) cliphiveView(w http.ResponseWriter, r *http.Request) {
         app.notFound(w)
         return
     }
-    clip, err := app.clips.Get(id)
+    clip, err := app.clip.Get(id)
     if err != nil {
         if errors.Is(err, models.ErrNoRecord){
             app.notFound(w)

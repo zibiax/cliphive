@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type Clips struct {
+type Clip struct {
     ID int
     Title string
     Content string
@@ -14,11 +14,11 @@ type Clips struct {
     Expires time.Time
 }
 
-type ClipsModel struct {
+type ClipModel struct {
     DB *sql.DB
 }
 
-func (m *ClipsModel) Insert(title string, content string, expires int) (int, error) {
+func (m *ClipModel) Insert(title string, content string, expires int) (int, error) {
     stmt := `INSERT INTO clips (title, content, created, expires) VALUES(?, ?, UTC_TIMESTAMP(),
         DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? DAY))`
 
@@ -34,13 +34,13 @@ func (m *ClipsModel) Insert(title string, content string, expires int) (int, err
     return int(id), nil
 }
 
-func(m *ClipsModel) Get(id int) (*Clips, error) {
+func(m *ClipModel) Get(id int) (*Clip, error) {
     stmt := `SELECT id, title, content, created, expires FROM clips WHERE
         expires > UTC_TIMESTAMP() AND id = ?`
 
     row := m.DB.QueryRow(stmt, id)
 
-    c := &Clips{}
+    c := &Clip{}
 
     err := row.Scan(&c.ID, &c.Title, &c.Content, &c.Created, &c.Expires)
     if err != nil {
@@ -54,7 +54,7 @@ func(m *ClipsModel) Get(id int) (*Clips, error) {
     return c, nil
 }
 
-func (m *ClipsModel) Latest() ([]*Clips, error) {
+func (m *ClipModel) Latest() ([]*Clip, error) {
     stmt := `SELECT id, title, content, created, expires from clips
         WHERE expires > UTC_TIMESTAMP() ORDER BY id DESC LIMIT 10`
     
@@ -63,10 +63,10 @@ func (m *ClipsModel) Latest() ([]*Clips, error) {
         return nil, err
     }
     defer rows.Close()
-    clips := []*Clips{}
+    clips := []*Clip{}
 
     for rows.Next() {
-        c := &Clips{}
+        c := &Clip{}
 
         err = rows.Scan(&c.ID, &c.Title, &c.Content, &c.Created, &c.Expires)
         if err != nil {
