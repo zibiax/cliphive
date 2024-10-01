@@ -6,4 +6,5 @@ import (
 
 type templateData struct {
     Clip *models.Clip
+    Clips []*models.Clip
 }

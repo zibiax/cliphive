@@ -17,17 +17,12 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    clip, err := app.clip.Latest()
+    clips, err := app.clip.Latest()
     if err != nil {
         app.serverError(w, err)
         return
     }
 
-    for _, clip := range clip {
-        fmt.Fprintf(w, "%+v\n", clip)
-    }
-
-   /* 
 
     files := []string{
         "./ui/html/pages/base.tmpl",
@@ -42,11 +37,14 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    err = ts.ExecuteTemplate(w, "base", nil)
+    data := &templateData{Clips: clips}
+
+    
+    err = ts.ExecuteTemplate(w, "base", data)
     if err != nil {
         app.serverError(w, err)
     }
-    */
+    
 
 }
 
