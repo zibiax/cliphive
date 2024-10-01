@@ -4,7 +4,7 @@ import (
     "fmt"
     "net/http"
     "strconv"
-    // "html/template"
+    "html/template"
     "errors"
 
     "github.com/zibiax/cliphive/internal/models"
@@ -27,25 +27,26 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
         fmt.Fprintf(w, "%+v\n", clip)
     }
 
-    
+   /* 
 
-   // files := []string{
-   //     "./ui/html/pages/base.tmpl",
-   //     "./ui/html/partials/nav.tmpl",
-   //     "./ui/html/pages/home.tmpl",
-   // }
+    files := []string{
+        "./ui/html/pages/base.tmpl",
+        "./ui/html/partials/nav.tmpl",
+        "./ui/html/pages/home.tmpl",
+    }
 
 
-   // ts, err := template.ParseFiles(files...)
-   // if err != nil {
-   //     app.serverError(w, err)
-   //     return
-   // }
+    ts, err := template.ParseFiles(files...)
+    if err != nil {
+        app.serverError(w, err)
+        return
+    }
 
-    //err = ts.ExecuteTemplate(w, "base", nil)
-    //if err != nil {
-    //    app.serverError(w, err)
-    //}
+    err = ts.ExecuteTemplate(w, "base", nil)
+    if err != nil {
+        app.serverError(w, err)
+    }
+    */
 
 }
 
@@ -78,7 +79,7 @@ func (app *application) cliphiveView(w http.ResponseWriter, r *http.Request) {
         app.notFound(w)
         return
     }
-    clips, err := app.clips.Get(id)
+    clip, err := app.clips.Get(id)
     if err != nil {
         if errors.Is(err, models.ErrNoRecord){
             app.notFound(w)
@@ -87,5 +88,25 @@ func (app *application) cliphiveView(w http.ResponseWriter, r *http.Request) {
         }
         return
     }
-    fmt.Fprintf(w, "%+v", clips)
+
+    files := []string{
+        "./ui/html/pages/base.tmpl",
+        "./ui/html/partials/nav.tmpl",
+        "./ui/html/pages/view.tmpl",
+    }
+
+    ts, err := template.ParseFiles(files...)
+    if err != nil {
+        app.serverError(w, err)
+        return
+    }
+
+    data := &templateData{
+        Clip: clip,
+    }
+
+    err = ts.ExecuteTemplate(w, "base", data)
+    if err != nil {
+        app.serverError(w, err)
+    }
 }
