@@ -8,6 +8,7 @@ import (
     "fmt"
     "os"
     "database/sql"
+    "html/template"
 
     _ "github.com/go-sql-driver/mysql"
     "github.com/zibiax/cliphive/internal/models"
@@ -18,6 +19,7 @@ type application struct {
     errorLog *log.Logger
     infoLog *log.Logger
     clip *models.ClipModel
+    templateCache map[string]*template.Template
 }
 
 
@@ -35,8 +37,6 @@ func main() {
     flag.Parse()
 
     dsn := fmt.Sprintf("%s:%s@/%s?parseTime=true", *dbUser, dbPass, *dbName,)
-    // dsn := flag.String("dsn", "web:pass@/cliphive?parseTime=true", "MySQL data source name")
-
 
     // Check if port number starts with ":"
     if !strings.HasPrefix(*port, ":") {
@@ -53,10 +53,16 @@ func main() {
 
     defer db.Close()
 
+    templateCache, err := newTemplateCache()
+    if err != nil {
+        errorLog.Fatal(err)
+    }
+
     app := &application{
         errorLog: errorLog,
         infoLog: infoLog,
         clip: &models.ClipModel{DB: db},
+        templateCache: templateCache,
     }
 
 

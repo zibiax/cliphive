@@ -4,7 +4,6 @@ import (
     "fmt"
     "net/http"
     "strconv"
-    "html/template"
     "errors"
 
     "github.com/zibiax/cliphive/internal/models"
@@ -24,27 +23,8 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
     }
 
 
-    files := []string{
-        "./ui/html/pages/base.tmpl",
-        "./ui/html/partials/nav.tmpl",
-        "./ui/html/pages/home.tmpl",
-    }
 
-
-    ts, err := template.ParseFiles(files...)
-    if err != nil {
-        app.serverError(w, err)
-        return
-    }
-
-    data := &templateData{Clips: clips}
-
-    
-    err = ts.ExecuteTemplate(w, "base", data)
-    if err != nil {
-        app.serverError(w, err)
-    }
-    
+    app.render(w, http.StatusOK, "home.tmpl", &templateData{Clips: clips})
 
 }
 
@@ -87,24 +67,5 @@ func (app *application) cliphiveView(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    files := []string{
-        "./ui/html/pages/base.tmpl",
-        "./ui/html/partials/nav.tmpl",
-        "./ui/html/pages/view.tmpl",
-    }
-
-    ts, err := template.ParseFiles(files...)
-    if err != nil {
-        app.serverError(w, err)
-        return
-    }
-
-    data := &templateData{
-        Clip: clip,
-    }
-
-    err = ts.ExecuteTemplate(w, "base", data)
-    if err != nil {
-        app.serverError(w, err)
-    }
+    app.render(w, http.StatusOK, "view.tmpl", &templateData{Clip: clip})
 }
