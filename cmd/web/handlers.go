@@ -22,10 +22,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    data := app.newTemplateData(r)
+    data.Clips = clips
 
-
-    app.render(w, http.StatusOK, "home.tmpl", &templateData{Clips: clips})
-
+    app.render(w, http.StatusOK, "home.tmpl", data)
 }
 
 func (app *application) cliphiveCreate(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +66,8 @@ func (app *application) cliphiveView(w http.ResponseWriter, r *http.Request) {
         }
         return
     }
+    data := app.newTemplateData(r)
+    data.Clip = clip
 
-    app.render(w, http.StatusOK, "view.tmpl", &templateData{Clip: clip})
+    app.render(w, http.StatusOK, "view.tmpl", data)
 }
