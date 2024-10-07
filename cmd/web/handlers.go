@@ -35,6 +35,7 @@ func (app *application) cliphiveCreate(w http.ResponseWriter, r *http.Request) {
         app.clientError(w, http.StatusMethodNotAllowed)
         return
     }
+
     title := "O snail"
     content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n- Kobayashi Issa"
     expires := 7

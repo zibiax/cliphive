@@ -14,5 +14,5 @@ func (app *application) routes() http.Handler {
     mux.HandleFunc("/clip/view", app.cliphiveView)
     mux.HandleFunc("/clip/create", app.cliphiveCreate)
 
-    return app.logRequest(secureHeader(mux))
+    return app.recoverPanic(app.logRequest(secureHeader(mux)))
 }
