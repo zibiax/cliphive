@@ -36,7 +36,8 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 func (app *application) cliphiveCreate(w http.ResponseWriter, r *http.Request) {
     data := app.newTemplateData(r)
     data.Form = clipCreateForm {
-        Expires: 365,
+        Content: "Roses are red, \nViolets are blue,\nNow it's your turn,\nTo write something new!",
+        Expires: 1,
     }
 
     app.render(w, http.StatusOK, "create.tmpl", data)
