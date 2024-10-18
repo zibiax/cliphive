@@ -11,6 +11,7 @@ import (
     "html/template"
 
     _ "github.com/go-sql-driver/mysql"
+    "github.com/go-playground/form"
     "github.com/zibiax/cliphive/internal/models"
 )
 
@@ -20,6 +21,7 @@ type application struct {
     infoLog *log.Logger
     clip *models.ClipModel
     templateCache map[string]*template.Template
+    formDecoder *form.Decoder
 }
 
 
@@ -58,11 +60,15 @@ func main() {
         errorLog.Fatal(err)
     }
 
+
+    formDecoder :=  form.NewDecoder()
+
     app := &application{
         errorLog: errorLog,
         infoLog: infoLog,
         clip: &models.ClipModel{DB: db},
         templateCache: templateCache,
+        formDecoder: formDecoder,
     }
 
 
