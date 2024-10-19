@@ -69,6 +69,7 @@ func (app *application) cliphiveCreatePost(w http.ResponseWriter, r *http.Reques
     if err != nil {
         app.clientError(w, http.StatusBadRequest)
         return
+    }
 
     form.CheckField(validator.NotBlank(form.Title), "title", "This field cannot be blank")
 
