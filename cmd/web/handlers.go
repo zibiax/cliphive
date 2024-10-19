@@ -45,31 +45,14 @@ func (app *application) cliphiveCreate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) cliphiveCreatePost(w http.ResponseWriter, r *http.Request) {
-    err := r.ParseForm()
-    if err != nil {
-        app.clientError(w, http.StatusBadRequest)
-        return
-    }
-
     var form clipCreateForm
+
+    err := app.decodePostForm(r, &form)
+    if err != nil {
+        app.clientError(w, http.StatusBadRequest)
+        return
+    }
     
-    /*
-    expires, err := strconv.Atoi(r.PostForm.Get("expires"))
-    if err != nil {
-        app.clientError(w, http.StatusBadRequest)
-        return
-    }
-    form := clipCreateForm{
-        Title: r.PostForm.Get("title"),
-        Content: r.PostForm.Get("content"),
-        Expires: expires,
-    }
-    */
-    err = app.formDecoder.Decode(&form,r.PostForm)
-    if err != nil {
-        app.clientError(w, http.StatusBadRequest)
-        return
-    }
 
     form.CheckField(validator.NotBlank(form.Title), "title", "This field cannot be blank")
 
