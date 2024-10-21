@@ -10,4 +10,4 @@ github.com/justinas/alice v1.2.0
 github.com/go-playground/form
 ```
 
-Would like to use svelte and htmx for the frontend :fire:
+Would like to use svelte and htmx for the frontend :hammer:
