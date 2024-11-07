@@ -9,10 +9,13 @@ import (
     "os"
     "database/sql"
     "html/template"
+    _ "time"
 
     _ "github.com/go-sql-driver/mysql"
     "github.com/go-playground/form"
     "github.com/zibiax/cliphive/internal/models"
+   _ "github.com/alexedwards/scs/v2"
+    _ "github.com/alexedwards/scs/mysqlstore"
 )
 
 
