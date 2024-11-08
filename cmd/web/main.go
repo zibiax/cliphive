@@ -9,13 +9,13 @@ import (
     "os"
     "database/sql"
     "html/template"
-    _ "time"
+    "time"
 
     _ "github.com/go-sql-driver/mysql"
     "github.com/go-playground/form"
     "github.com/zibiax/cliphive/internal/models"
-   _ "github.com/alexedwards/scs/v2"
-    _ "github.com/alexedwards/scs/mysqlstore"
+    "github.com/alexedwards/scs/v2"
+    "github.com/alexedwards/scs/mysqlstore"
 )
 
 
@@ -25,6 +25,7 @@ type application struct {
     clip *models.ClipModel
     templateCache map[string]*template.Template
     formDecoder *form.Decoder
+    sessionManager *scs.SessionManager
 }
 
 
@@ -66,15 +67,18 @@ func main() {
 
     formDecoder :=  form.NewDecoder()
 
+    sessionManager := scs.New()
+    sessionManager.Store = mysqlstore.New(db)
+    sessionManager.Lifetime = 12 * time.Hour
+
     app := &application{
         errorLog: errorLog,
         infoLog: infoLog,
         clip: &models.ClipModel{DB: db},
         templateCache: templateCache,
         formDecoder: formDecoder,
+        sessionManager: sessionManager,
     }
-
-
 
 
     // Http.Server struct, so that it uses same configuration that we set.
