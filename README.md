@@ -10,4 +10,4 @@ github.com/justinas/alice v1.2.0
 github.com/go-playground/form
 ```
 
-Would like to use svelte and htmx for the frontend :hammer:
+Would like to use svelte for frontend, because it seems like a good js framework that compiles it to its barebones js for good performance :hammer:
