@@ -77,6 +77,8 @@ func (app *application) cliphiveCreatePost(w http.ResponseWriter, r *http.Reques
         return
     }
 
+    app.sessionManager.Put(r.Context(),"flash", "Clip successfully created!")
+
     http.Redirect(w, r, fmt.Sprintf("/clip/view/%d", id), http.StatusSeeOther)
 }
 
@@ -98,8 +100,12 @@ func (app *application) cliphiveView(w http.ResponseWriter, r *http.Request) {
         }
         return
     }
+
+    flash := app.sessionManager.PopString(r.Context(), "flash")
+
     data := app.newTemplateData(r)
     data.Clip = clip
+    data.Flash = flash
 
     app.render(w, http.StatusOK, "view.tmpl", data)
 }
